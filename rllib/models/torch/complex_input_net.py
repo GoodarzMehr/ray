@@ -172,7 +172,12 @@ class ComplexInputNetwork(TorchModelV2, nn.Module):
                 initializer=torch_normc_initializer(0.01),
             )
         else:
-            self.num_outputs = concat_size
+            post_fcnet_hiddens = model_config.get("post_fcnet_hiddens", [])
+
+            if post_fcnet_hiddens:
+                self.num_outputs = post_fcnet_hiddens[-1]
+            else:
+                self.num_outputs = concat_size
 
     @override(ModelV2)
     def forward(self, input_dict, state, seq_lens):
